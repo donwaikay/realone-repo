@@ -1,11 +1,10 @@
 # configured aws provider with proper credentials
 provider "aws" {
   region    = "us-east-1"
-  profile   = "yusuf"
 }
 
 
-# create default vpc if one does not exit
+# create default vpc if one does not exist
 resource "aws_default_vpc" "default_vpc" {
 
   tags    = {
@@ -18,7 +17,7 @@ resource "aws_default_vpc" "default_vpc" {
 data "aws_availability_zones" "available_zones" {}
 
 
-# create default subnet if one does not exit
+# create default subnet if one does not exist
 resource "aws_default_subnet" "default_az1" {
   availability_zone = data.aws_availability_zones.available_zones.names[0]
 
@@ -27,10 +26,9 @@ resource "aws_default_subnet" "default_az1" {
   }
 }
 
-
 # create security group for the ec2 instance
 resource "aws_security_group" "ec2_security_group" {
-  name        = "ec2 security group"
+  name        = "ec2_security_group"
   description = "allow access on ports 8080 and 22"
   vpc_id      = aws_default_vpc.default_vpc.id
 
@@ -89,7 +87,7 @@ resource "aws_instance" "ec2_instance" {
   instance_type          = "t2.small"
   subnet_id              = aws_default_subnet.default_az1.id
   vpc_security_group_ids = [aws_security_group.ec2_security_group.id]
-  key_name               = "devopskeypair"
+  key_name               = "olayinka-keypair"
   # user_data            = file("install_jenkins.sh")
 
   tags = {
@@ -105,7 +103,7 @@ resource "null_resource" "name" {
   connection {
     type        = "ssh"
     user        = "ubuntu"
-    private_key = file("~/Downloads/devopskeypair.pem")
+    private_key = file("~/Downloads/olayinka-keypair.pem")
     host        = aws_instance.ec2_instance.public_ip
   }
 
