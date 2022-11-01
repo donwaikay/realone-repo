@@ -28,9 +28,13 @@ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubun
 sudo apt-key fingerprint 0EBFCD88
 sudo apt-get update -y
 sudo apt-get install docker-ce docker-ce-cli containerd.io -y
+sudo systemctl restart docker
+sudo reboot
 sudo usermod -aG docker jenkins
 sudo usermod -aG docker ubuntu
 sudo usermod -aG docker $USER
+sudo systemctl restart docker
+sudo reboot
 curl -LO https://dl.k8s.io/release/v1.21.0/bin/linux/amd64/kubectl
 curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
 sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
@@ -45,10 +49,11 @@ echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https:/
 sudo apt-get update -y
 sudo apt-get install -y kubectl=1.21.0-00
 sudo apt install awscli -y
-wget https://get.helm.sh/helm-v3.2.4-linux-amd64.tar.gz
-tar -zxvf helm-v3.2.4-linux-amd64.tar.gz
-sudo mv linux-amd64/helm /usr/local/bin/helm
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+$ chmod 700 get_helm.sh
+$ ./get_helm.sh
 echo 'clearing screen...' && sleep 5
 clear
 echo 'jenkins is installed'
 echo 'this is the default password :' $(sudo cat /var/lib/jenkins/secrets/initialAdminPassword)
+
